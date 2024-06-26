@@ -7,9 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @Slf4j
 @SpringBootApplication
 public class FilmorateApplication {
-	public static void main(String[] args) {
-		SpringApplication.run(FilmorateApplication.class, args);
-		log.info("Server run");
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(FilmorateApplication.class, args);
+        log.info("Server run");
+    }
 }

@@ -14,7 +14,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/films")
 public class FilmController {
-
     private final Map<Long, Film> films = new HashMap<>();
 
     @GetMapping
@@ -40,12 +39,12 @@ public class FilmController {
         }
         if (film.getDuration() < 0) {
             log.debug("POST ERROR: create Film - Duration < 0");
-            throw new ValidationException("продолжительность фильма должна быть положительным числом");
+            throw new ValidationException("Продолжительность фильма должна быть положительным числом");
         }
         film.setId(getNextId());
         log.trace("film set Id");
         films.put(film.getId(), film);
-        log.trace("film put in Map");
+        log.trace("film add in filmsMap");
         return film;
     }
 
@@ -57,25 +56,30 @@ public class FilmController {
             throw new ValidationException("Id должен быть указан");
         }
         if (films.containsKey(newFilm.getId())) {
+            log.trace("film contains in filmsMap");
             Film oldFilm = films.get(newFilm.getId());
             if (newFilm.getName() != null && !newFilm.getName().isBlank()) {
+                log.trace("film set new name");
                 oldFilm.setName(newFilm.getName());
             }
             if (newFilm.getDescription() != null && newFilm.getDescription().length() < 200) {
+                log.trace("film set new description");
                 oldFilm.setDescription(newFilm.getDescription());
             }
             if (newFilm.getReleaseDate() != null &&
-                newFilm.getReleaseDate().isAfter(LocalDate.of(1895, 12, 28))) {
+                    newFilm.getReleaseDate().isAfter(LocalDate.of(1895, 12, 28))) {
+                log.trace("film set new release date");
                 oldFilm.setReleaseDate(newFilm.getReleaseDate());
             }
             if (newFilm.getDuration() != null && newFilm.getDuration() > 0) {
+                log.trace("film set new duration");
                 oldFilm.setDuration(newFilm.getDuration());
             }
             return oldFilm;
         }
+        log.debug("PUT ERROR: Id not found");
         throw new ValidationException("Фильм с id = " + newFilm.getId() + " не найден");
     }
-
 
 
     private long getNextId() {
