@@ -52,7 +52,6 @@ public class FilmController {
         throw new ValidationException("Фильм с id = " + newFilm.getId() + " не найден");
     }
 
-
     private long getNextId() {
         log.info("Use getNextId for Film");
         long currentMaxId = films.keySet()
