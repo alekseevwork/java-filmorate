@@ -39,11 +39,11 @@ public class UserControllerTest {
 
     @Test
     void getFindAllEmptyUsersMap() throws Exception {
-            Mockito.when(userService.findAll()).thenReturn(new ArrayList<>());
-            mockMvc.perform(get("/users"))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$").isEmpty());
-            verify(userService, times(1)).findAll();
+        Mockito.when(userService.findAll()).thenReturn(new ArrayList<>());
+        mockMvc.perform(get("/users"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+        verify(userService, times(1)).findAll();
     }
 
     @Test
@@ -92,8 +92,8 @@ public class UserControllerTest {
         when(userService.create(userRequest)).thenReturn(userResponse);
 
         mockMvc.perform(post("/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(userJson))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(userJson))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(response, true));

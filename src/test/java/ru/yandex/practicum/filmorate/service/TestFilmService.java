@@ -34,13 +34,13 @@ public class TestFilmService {
 
     @Test
     void testCreateFilm() {
-    Film film = Film.builder()
-            .name("name")
-            .description("description")
-            .releaseDate(LocalDate.of(1997, 3, 25))
-            .duration(100).build();
-    Film saveFilm = filmService.create(film);
-    film.setId(1L);
+        Film film = Film.builder()
+                .name("name")
+                .description("description")
+                .releaseDate(LocalDate.of(1997, 3, 25))
+                .duration(100).build();
+        Film saveFilm = filmService.create(film);
+        film.setId(1L);
         assertEquals(saveFilm, film, "Задачи не совпали.");
     }
 

@@ -18,7 +18,7 @@ public class User {
     String login;
     String name;
     @NotNull
-    @Past(message="date of birth must be less than today")
+    @Past(message = "date of birth must be less than today")
     @JsonFormat(pattern = "yyyy-MM-dd")
     LocalDate birthday;
 }
