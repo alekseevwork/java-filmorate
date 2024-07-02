@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -19,6 +20,7 @@ public class Film {
     @Size(min = 1, max = 200)
     String description;
     @MinimumDate
+    @JsonFormat(pattern = "yyyy-MM-dd")
     LocalDate releaseDate;
     @PositiveOrZero
     @NotNull

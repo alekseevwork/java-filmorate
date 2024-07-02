@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Data;
@@ -18,5 +19,6 @@ public class User {
     String name;
     @NotNull
     @Past(message="date of birth must be less than today")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     LocalDate birthday;
 }
