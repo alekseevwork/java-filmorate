@@ -25,19 +25,19 @@ public class UserController {
 
     @GetMapping
     public Collection<User> findAll() {
-        log.info("GET findAll Users");
+        log.info("GET /users: findAll");
         return userService.findAll();
     }
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
-        log.info("Use POST: User create");
+        log.info("POST /users: create: {}", user);
         return userService.create(user);
     }
 
     @PutMapping
     public User update(@Valid @RequestBody User newUser) {
-        log.info("Use PUT: User update");
+        log.info("PUT /users: update: {}", newUser);
         return userService.update(newUser);
     }
 }

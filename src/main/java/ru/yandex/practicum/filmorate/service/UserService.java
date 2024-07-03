@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,22 +15,25 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserInterface {
 
     private final Map<Long, User> users = new HashMap<>();
+    @PositiveOrZero
     private Long userId = 0L;
 
+    @Override
     public Collection<User> findAll() {
         return users.values();
     }
 
+    @Override
     public User create(User user) {
         if (isEmailIn(user.getEmail(), 0)) {
-            log.debug("User update  - Email is already");
+            log.debug("POST ERROR: User create  - Email = {}, is already", user.getEmail());
             throw new DuplicateFormatFlagsException("Этот имейл уже используется");
         }
         if (user.getName() == null || user.getName().isBlank()) {
-            log.debug("create User - Name is empty, replaced in Login");
+            log.debug("User create - Name is empty, replaced in Login");
             user.setName(user.getLogin());
         }
         user.setId(++userId);
@@ -40,13 +44,14 @@ public class UserService {
         return user;
     }
 
+    @Override
     public User update(User newUser) {
         if (newUser.getId() == null) {
             log.warn("PUT ERROR: update User - id is empty");
             throw new ValidationException("Id должен быть указан");
         }
         if (isEmailIn(newUser.getEmail(), 1)) {
-            log.debug("Use PUT: User update  - Email is already");
+            log.debug("PUT ERROR: User update  - Email = {}, is already", newUser.getEmail());
             throw new DuplicateFormatFlagsException("Этот имейл уже используется");
         }
         if (users.containsKey(newUser.getId())) {

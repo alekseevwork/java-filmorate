@@ -25,19 +25,19 @@ public class FilmController {
 
     @GetMapping
     public Collection<Film> findAll() {
-        log.info("GET findAll Films");
+        log.info("GET /films: findAll");
         return filmService.findAll();
     }
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
-        log.info("Use POST: Film create");
+        log.info("POST /films: create: {}", film);
         return filmService.create(film);
     }
 
     @PutMapping
     public Film update(@Valid @RequestBody Film newFilm) {
-        log.info("Use PUT Film update");
+        log.info("PUT /films: update: {}", newFilm);
         return filmService.update(newFilm);
     }
 }
