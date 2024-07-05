@@ -10,34 +10,34 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.Collection;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/films")
-public class FilmController {
+@RequestMapping("/users")
+public class UserController {
 
-    private final FilmService filmService;
+    private final UserService userService;
 
     @GetMapping
-    public Collection<Film> findAll() {
-        log.info("GET /films: findAll");
-        return filmService.findAll();
+    public Collection<User> findAll() {
+        log.info("GET /users: findAll");
+        return userService.findAll();
     }
 
     @PostMapping
-    public Film create(@Valid @RequestBody Film film) {
-        log.info("POST /films: create: {}", film);
-        return filmService.create(film);
+    public User create(@Valid @RequestBody User user) {
+        log.info("POST /users: create: {}", user);
+        return userService.create(user);
     }
 
     @PutMapping
-    public Film update(@Valid @RequestBody Film newFilm) {
-        log.info("PUT /films: update: {}", newFilm);
-        return filmService.update(newFilm);
+    public User update(@Valid @RequestBody User newUser) {
+        log.info("PUT /users: update: {}", newUser);
+        return userService.update(newUser);
     }
 }
