@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.service;
+package ru.yandex.practicum.filmorate.storage;
 
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -13,12 +13,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestUserService {
+public class TestUserStorage {
 
-    private final UserService userService;
+    private final InMemoryUserStorage userStorage;
 
-    public TestUserService() {
-        this.userService = new UserService();
+    public TestUserStorage() {
+        this.userStorage = new InMemoryUserStorage();
     }
 
     @Test
@@ -30,9 +30,9 @@ public class TestUserService {
                 .email("example@mail.com")
                 .birthday(LocalDate.parse("2002-12-03"))
                 .build();
-        assertTrue(userService.findAll().isEmpty(), "Список не пустой");
-        userService.create(user);
-        assertFalse(userService.findAll().isEmpty(), "Список пустой");
+        assertTrue(userStorage.findAll().isEmpty(), "Список не пустой");
+        userStorage.create(user);
+        assertFalse(userStorage.findAll().isEmpty(), "Список пустой");
     }
 
     @Test
@@ -43,7 +43,7 @@ public class TestUserService {
                 .email("example@mail.com")
                 .birthday(LocalDate.parse("2002-12-03"))
                 .build();
-        User saveUser = userService.create(user);
+        User saveUser = userStorage.create(user);
         user.setId(1L);
         assertEquals(saveUser, user, "Задачи не совпали.");
     }
@@ -64,13 +64,13 @@ public class TestUserService {
                 .email("example@mail.com")
                 .birthday(LocalDate.parse("2002-12-03"))
                 .build();
-        userService.create(userOld);
-        Collection<User> findsUser = userService.findAll();
+        userStorage.create(userOld);
+        Collection<User> findsUser = userStorage.findAll();
 
         assertTrue(findsUser.contains(userOld), "Фильм не добавлен");
         assertFalse(findsUser.contains(userNew), "Фильм не добавлен");
 
-        userService.update(userNew);
+        userStorage.update(userNew);
 
         assertTrue(findsUser.contains(userNew), "Фильм не добавлен");
         assertFalse(findsUser.contains(userOld), "Фильм не добавлен");
@@ -92,9 +92,9 @@ public class TestUserService {
                 .birthday(LocalDate.parse("2002-12-03"))
                 .build();
 
-        userService.create(userOld);
+        userStorage.create(userOld);
         assertThrows(DuplicateFormatFlagsException.class, () -> {
-            userService.create(userNew);
+            userStorage.create(userNew);
         });
     }
 
@@ -107,7 +107,7 @@ public class TestUserService {
                 .birthday(LocalDate.parse("2002-12-03"))
                 .build();
         assertThrows(ValidationException.class, () -> {
-            userService.update(user);
+            userStorage.update(user);
         });
     }
 }

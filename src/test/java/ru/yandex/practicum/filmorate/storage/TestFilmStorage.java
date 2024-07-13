@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.service;
+package ru.yandex.practicum.filmorate.storage;
 
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -12,12 +12,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestFilmService {
+public class TestFilmStorage {
 
-    private final FilmService filmService;
+    private final InMemoryFilmStorage filmStorage;
 
-    public TestFilmService() {
-        this.filmService = new FilmService();
+    public TestFilmStorage() {
+        this.filmStorage = new InMemoryFilmStorage();
     }
 
     @Test
@@ -27,9 +27,9 @@ public class TestFilmService {
                 .description("description")
                 .releaseDate(LocalDate.of(1997, 3, 25))
                 .duration(100).build();
-        assertTrue(filmService.findAll().isEmpty(), "Список не пустой");
-        filmService.create(film);
-        assertFalse(filmService.findAll().isEmpty(), "Список пустой");
+        assertTrue(filmStorage.findAll().isEmpty(), "Список не пустой");
+        filmStorage.create(film);
+        assertFalse(filmStorage.findAll().isEmpty(), "Список пустой");
     }
 
     @Test
@@ -39,7 +39,7 @@ public class TestFilmService {
                 .description("description")
                 .releaseDate(LocalDate.of(1997, 3, 25))
                 .duration(100).build();
-        Film saveFilm = filmService.create(film);
+        Film saveFilm = filmStorage.create(film);
         film.setId(1L);
         assertEquals(saveFilm, film, "Задачи не совпали.");
     }
@@ -58,13 +58,13 @@ public class TestFilmService {
                 .description("description2")
                 .releaseDate(LocalDate.of(1997, 3, 25))
                 .duration(100).build();
-        filmService.create(filmOld);
-        Collection<Film> findFilm = filmService.findAll();
+        filmStorage.create(filmOld);
+        Collection<Film> findFilm = filmStorage.findAll();
 
         assertTrue(findFilm.contains(filmOld), "Фильм не добавлен");
         assertFalse(findFilm.contains(filmNew), "Фильм не добавлен");
 
-        filmService.update(filmNew);
+        filmStorage.update(filmNew);
 
         assertTrue(findFilm.contains(filmNew), "Фильм не добавлен");
         assertFalse(findFilm.contains(filmOld), "Фильм не добавлен");
@@ -77,7 +77,7 @@ public class TestFilmService {
                 .description("description")
                 .releaseDate(LocalDate.of(1997, 3, 25))
                 .duration(100).build();
-        filmService.create(filmOld);
+        filmStorage.create(filmOld);
         Film filmNew = Film.builder()
                 .name("name2")
                 .description("description2")
@@ -85,7 +85,7 @@ public class TestFilmService {
                 .duration(100).build();
 
         assertThrows(ValidationException.class, () -> {
-            filmService.update(filmNew);
+            filmStorage.update(filmNew);
         });
     }
 }

@@ -1,80 +1,99 @@
 package ru.yandex.practicum.filmorate.service;
 
-import jakarta.validation.constraints.PositiveOrZero;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.Collection;
-import java.util.DuplicateFormatFlagsException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
-public class UserService implements UserInterface {
+public class UserService {
 
-    private final Map<Long, User> users = new HashMap<>();
-    @PositiveOrZero
-    private Long userId = 0L;
+    public final UserStorage userStorage;
 
-    @Override
-    public Collection<User> findAll() {
-        return users.values();
+    @Autowired
+    public UserService(UserStorage userStorage) {
+        this.userStorage = userStorage;
     }
 
-    @Override
-    public User create(User user) {
-        if (isEmailIn(user.getEmail(), 0)) {
-            log.debug("POST ERROR: User create  - Email = {}, is already", user.getEmail());
-            throw new DuplicateFormatFlagsException("Этот имейл уже используется");
+    public void addFriend(Long userId, Long friendId) {
+        if (!userStorage.getUsers().containsKey(userId)) {
+            log.debug("User addFriend - User not found");
+            throw new NotFoundException("User not found.");
         }
-        if (user.getName() == null || user.getName().isBlank()) {
-            log.debug("User create - Name is empty, replaced in Login");
-            user.setName(user.getLogin());
-        }
-        user.setId(++userId);
-        log.trace("user set Id");
 
-        users.put(user.getId(), user);
-        log.trace("user add in usersMap");
-        return user;
+        if (!userStorage.getUsers().containsKey(friendId)) {
+            log.debug("User addFriend - Friend not found");
+            throw new NotFoundException("Friend not found.");
+        }
+
+        userStorage.getUsers().get(userId).getFriends().add(friendId);
+        userStorage.getUsers().get(friendId).getFriends().add(userId);
     }
 
-    @Override
-    public User update(User newUser) {
-        if (newUser.getId() == null) {
-            log.warn("PUT ERROR: update User - id is empty");
-            throw new ValidationException("Id должен быть указан");
+    public void deleteFriend(Long userId, Long friendId) {
+
+        if (!userStorage.getUsers().containsKey(userId)) {
+            log.debug("User deleteFriend - User not found");
+            throw new NotFoundException("User not found.");
         }
-        if (isEmailIn(newUser.getEmail(), 1)) {
-            log.debug("PUT ERROR: User update  - Email = {}, is already", newUser.getEmail());
-            throw new DuplicateFormatFlagsException("Этот имейл уже используется");
+
+        if (!userStorage.getUsers().containsKey(friendId)) {
+            log.debug("User deleteFriend - Friend not found");
+            throw new NotFoundException("Friend not found.");
         }
-        if (users.containsKey(newUser.getId())) {
-            User oldUser = createUser(newUser);
-            users.put(oldUser.getId(), oldUser);
-            return oldUser;
-        }
-        log.warn("PUT ERROR: User id not found");
-        throw new ValidationException("Пользователь с id = " + newUser.getId() + " не найден");
+        userStorage.getUsers().get(userId).getFriends().remove(friendId);
+        userStorage.getUsers().get(friendId).getFriends().remove(userId);
     }
 
-    private boolean isEmailIn(String email, int pointer) {
-        log.info("Use isEmailIn");
-        return users.values().stream().filter(user -> user.getEmail().equals(email)).toList().size() > pointer;
+    public List<User> getAllFriends(Long userId) {
+        List<User> friendsList = new ArrayList<>();
+
+        if (!userStorage.getUsers().containsKey(userId)) {
+            log.debug("User getAllFriends - User not found");
+            throw new NotFoundException("User not found.");
+        }
+
+        User user = userStorage.getUsers().get(userId);
+
+        for (Long friendId : user.getFriends()) {
+            friendsList.add(userStorage.getUsers().get(friendId));
+        }
+        return friendsList;
     }
 
-    private User createUser(User newUser) {
-        return User.builder()
-                .id(newUser.getId())
-                .email(newUser.getEmail())
-                .login(newUser.getLogin())
-                .name(newUser.getName())
-                .birthday(newUser.getBirthday())
-                .build();
+    public List<User> getFriendsSharedUsers(Long userId, Long otherId) {
+        List<User> friendsList = new ArrayList<>();
+        Set<Long> friendsIdSet = new HashSet<>();
+
+        if (!userStorage.getUsers().containsKey(userId)) {
+            log.debug("User getFriendsSharedUsers - User not found");
+            throw new NotFoundException("User not found.");
+        }
+
+        if (!userStorage.getUsers().containsKey(otherId)) {
+            log.debug("User getFriendsSharedUsers - other User not found");
+            throw new NotFoundException("Friend not found.");
+        }
+        User user1 = userStorage.getUsers().get(userId);
+        User user2 = userStorage.getUsers().get(otherId);
+
+        friendsIdSet.addAll(user1.getFriends());
+        friendsIdSet.addAll(user2.getFriends());
+
+        friendsIdSet.remove(user1.getId());
+        friendsIdSet.remove(user2.getId());
+
+        for (Long id : friendsIdSet) {
+            friendsList.add(userStorage.getUsers().get(id));
+        }
+        return friendsList;
     }
 }
