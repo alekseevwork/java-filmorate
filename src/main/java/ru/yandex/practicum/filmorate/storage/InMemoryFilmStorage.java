@@ -45,7 +45,7 @@ public class InMemoryFilmStorage implements FilmStorage {
             if (newFilm.getLike() == null) {
                 newFilm.setLike(0);
             }
-            if ( newFilm.getUsersId() == null) {
+            if (newFilm.getUsersId() == null) {
                 newFilm.setUsersId(new HashSet<>());
             }
             Film oldFilm = createFilm(newFilm);
