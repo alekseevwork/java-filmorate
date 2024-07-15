@@ -45,19 +45,19 @@ public class FilmController {
     }
 
     @PutMapping("/{filmId}/like/{userId}")
-    public void addLike(@Valid @PathVariable Long filmId, @PathVariable Long userId) {
+    public void addLike(@Valid @PathVariable Long filmId, @Valid  @PathVariable Long userId) {
         log.info("PUT /films/filmId/like/userId: addLike: filmId - {}, userId - {}", filmId, userId);
         filmService.addLike(filmId, userId);
     }
 
     @DeleteMapping("/{filmId}/like/{userId}")
-    public void deleteLike(@Valid @PathVariable Long filmId, @PathVariable Long userId) {
+    public void deleteLike(@Valid @PathVariable Long filmId, @Valid @PathVariable Long userId) {
         log.info("DELETE /films/filmId/like/userId: deleteLike: filmId - {}, userId - {}", filmId, userId);
         filmService.deleteLike(filmId, userId);
     }
 
     @GetMapping("/popular")
-    public List<Film> getPopularLikesFilms(@RequestParam(defaultValue = "10", required = false) Integer count) {
+    public List<Film> getPopularLikesFilms(@RequestParam(defaultValue = "10") Integer count) {
         log.info("GET /films: findAll");
         return filmService.getPopularLikesFilms(count);
     }

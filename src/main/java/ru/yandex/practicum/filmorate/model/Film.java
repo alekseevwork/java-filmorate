@@ -10,13 +10,12 @@ import lombok.Data;
 import ru.yandex.practicum.filmorate.annotation.MinimumDate;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 @Builder
 @Data
 public class Film {
-    private final Set<Long> usersId = new HashSet<>();
+    private Set<Long> usersId;
 
     Long id;
     @NotBlank

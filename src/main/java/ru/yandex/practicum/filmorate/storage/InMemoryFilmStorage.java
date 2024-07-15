@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 @Slf4j
@@ -30,7 +31,10 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film create(Film film) {
         film.setId(++filmId);
+        film.setLike(0);
+        film.setUsersId(new HashSet<>());
         films.put(film.getId(), film);
+        System.out.println(film);
         return film;
     }
 

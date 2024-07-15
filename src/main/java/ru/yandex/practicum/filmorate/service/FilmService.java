@@ -33,10 +33,14 @@ public class FilmService {
             log.debug("Film addLike - User already voiced");
             throw new ValidationException("User already voiced.");
         }
+        if (userId == null) {
+            throw new NotFoundException("User not found.");
+        }
 
+        int oldLike = film.getLike();
+        film.setLike(++oldLike);
         film.getUsersId().add(userId);
-        int nowLikes = film.getLike();
-        film.setLike(++nowLikes);
+
     }
 
     public void deleteLike(Long filmId, Long userId) {
@@ -46,14 +50,19 @@ public class FilmService {
         }
         Film film = filmStorage.getFilms().get(filmId);
 
+        int oldLike = film.getLike();
+        film.setLike(--oldLike);
         film.getUsersId().remove(userId);
-        int nowLikes = film.getLike();
-        film.setLike(--nowLikes);
     }
 
-    public List<Film> getPopularLikesFilms(int sizeList) {
+    public List<Film> getPopularLikesFilms(Integer sizeList) {
+        if (sizeList == null) {
+            throw new ValidationException("Count is null");
+        }
+
         return filmStorage.findAll().stream()
-                .sorted(Comparator.comparingInt(Film::getLike))
-                .limit(sizeList).toList();
+                .sorted(Comparator.comparingInt(Film::getLike).reversed())
+                .limit(sizeList)
+                .toList();
     }
 }
