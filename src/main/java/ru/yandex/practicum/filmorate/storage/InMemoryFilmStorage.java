@@ -31,9 +31,9 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film create(Film film) {
         film.setId(++filmId);
-        film.setLike(0);
         film.setUsersId(new HashSet<>());
         films.put(film.getId(), film);
+        film.setLike(0);
         System.out.println(film);
         return film;
     }
@@ -42,6 +42,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film update(Film newFilm) {
         if (films.containsKey(newFilm.getId())) {
             log.trace("film contains in filmsMap");
+            if (newFilm.getLike() == null) {
+                newFilm.setLike(0);
+            }
+            if ( newFilm.getUsersId() == null) {
+                newFilm.setUsersId(new HashSet<>());
+            }
             Film oldFilm = createFilm(newFilm);
             films.put(oldFilm.getId(), oldFilm);
             return oldFilm;
@@ -57,6 +63,8 @@ public class InMemoryFilmStorage implements FilmStorage {
                 .description(newFilm.getDescription())
                 .releaseDate(newFilm.getReleaseDate())
                 .duration(newFilm.getDuration())
+                .like(newFilm.getLike())
+                .usersId(newFilm.getUsersId())
                 .build();
     }
 }
