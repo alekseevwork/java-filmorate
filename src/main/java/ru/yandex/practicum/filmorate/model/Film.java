@@ -10,19 +10,23 @@ import lombok.Data;
 import ru.yandex.practicum.filmorate.annotation.MinimumDate;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Builder
 @Data
 public class Film {
+    private Set<Long> usersId;
+
     Long id;
     @NotBlank
-    String name;
+    private String name;
     @Size(min = 1, max = 200)
-    String description;
+    private String description;
     @MinimumDate
     @JsonFormat(pattern = "yyyy-MM-dd")
-    LocalDate releaseDate;
+    private LocalDate releaseDate;
     @PositiveOrZero
     @NotNull
-    Integer duration;
+    private Integer duration;
+    private Integer like;
 }

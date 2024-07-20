@@ -1,14 +1,17 @@
-package ru.yandex.practicum.filmorate.service;
+package ru.yandex.practicum.filmorate.storage;
 
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
+import java.util.Map;
 
-public interface FilmInterface {
+public interface FilmStorage {
 
     Film create(Film film);
 
     Collection<Film> findAll();
 
     Film update(Film film);
+
+    Map<Long, Film> getFilms();
 }
