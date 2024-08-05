@@ -16,6 +16,7 @@ import java.util.Set;
 @Data
 public class Film {
     private Set<Long> usersId;
+    private Set<Integer> genres;
 
     Long id;
     @NotBlank
@@ -28,5 +29,4 @@ public class Film {
     @PositiveOrZero
     @NotNull
     private Integer duration;
-    private Integer like;
 }
