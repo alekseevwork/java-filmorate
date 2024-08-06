@@ -13,25 +13,25 @@
 --    (5, 'Документальный'),
 --    (6, 'Боевик');
 
-INSERT INTO rating (id, rating)
+INSERT INTO mpa (id, name)
 SELECT 1, 'G'
-WHERE NOT EXISTS (Select 1 FROM rating WHERE id = 1);
+WHERE NOT EXISTS (Select 1 FROM mpa WHERE id = 1);
 
-INSERT INTO rating (id, rating)
+INSERT INTO mpa (id, name)
 SELECT 2, 'PG'
-WHERE NOT EXISTS (Select 2 FROM rating WHERE id = 2);
+WHERE NOT EXISTS (Select 2 FROM mpa WHERE id = 2);
 
-INSERT INTO rating (id, rating)
+INSERT INTO mpa (id, name)
 SELECT 3, 'PG-13'
-WHERE NOT EXISTS (Select 3 FROM rating WHERE id = 3);
+WHERE NOT EXISTS (Select 3 FROM mpa WHERE id = 3);
 
-INSERT INTO rating (id, rating)
+INSERT INTO mpa (id, name)
 SELECT 4, 'R'
-WHERE NOT EXISTS (Select 4 FROM rating WHERE id = 4);
+WHERE NOT EXISTS (Select 4 FROM mpa WHERE id = 4);
 
-INSERT INTO rating (id, rating)
+INSERT INTO mpa (id, name)
 SELECT 5, 'NC-17'
-WHERE NOT EXISTS (Select 5 FROM rating WHERE id = 5);
+WHERE NOT EXISTS (Select 5 FROM mpa WHERE id = 5);
 
 --------------------------------------------------------
 

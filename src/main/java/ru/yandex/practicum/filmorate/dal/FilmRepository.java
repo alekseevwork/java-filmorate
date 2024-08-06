@@ -15,15 +15,19 @@ import java.util.List;
 @Slf4j
 @Repository
 public class FilmRepository extends BaseRepository<Film> implements FilmService, FilmStorage {
-    private static final String INSERT_QUERY = "INSERT INTO film (name, description, releaseDate, duration, mpa)" +
+    private static final String INSERT_QUERY = "INSERT INTO film (name, description, release_date, duration, mpa_id)" +
             "VALUES (?, ?, ?, ?, ?)";
-    private static final String UPDATE_QUERY = "UPDATE film SET name = ?, description = ?, releaseDate = ?," +
+    private static final String UPDATE_QUERY = "UPDATE film SET name = ?, description = ?, release_date = ?," +
             " duration = ?, mpa = ? WHERE id = ? VALUES(?, ?, ?, ?, ?, ?)";
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM films WHERE id = ?";
     private static final String DELETE_BY_ID_QUERY = "DELETE FROM films WHERE id = ?";
     private static final String FIND_ALL_QUERY = "SELECT * FROM films";
-    private static final String FIND_POPULAR_QUERY = "SELECT * FROM films " +
-            "INNER JOIN film_like ON film.id = film_like.film_id GROUP BY COUNT( film_like.film_id) LIMIT ?";
+    private static final String FIND_POPULAR_QUERY = "SELECT f.id, f.name, COUNT(fl.film_id) AS like_count\n" +
+            "FROM film f\n" +
+            "JOIN film_like fl ON f.id = fl.film_id\n" +
+            "GROUP BY f.id, f.name\n" +
+            "ORDER BY like_count DESC\n" +
+            "LIMIT ?;";
     private static final String UPDATE_MPA_QUERY = "UPDATE film SET mpa = ? WHERE id = ? VALUES(?, ?)";
     private static final String INSERT_GENRE_QUERY = "INSERT INTO film_genre (genre_id, film_id) VALUES(?, ?)";
 
@@ -33,14 +37,20 @@ public class FilmRepository extends BaseRepository<Film> implements FilmService,
 
     @Override
     public Film create(Film film) {
+        System.out.println("---------------");
         System.out.println(film);
+        System.out.println(film.getName());
+        System.out.println(film.getDescription());
+        System.out.println(film.getReleaseDate());
+        System.out.println(film.getDuration());
+        System.out.println(film.getMpa().getId());
         Long filmId = insert(
                 INSERT_QUERY,
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration(),
-                film.getMpa()
+                film.getMpa().getId()
                 );
         film.setId(filmId);
         return film;

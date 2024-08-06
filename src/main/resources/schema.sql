@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS film_like;
 
 DROP TABLE IF EXISTS film;
 
-DROP TABLE IF EXISTS rating;
+DROP TABLE IF EXISTS mpa;
 
 DROP TABLE IF EXISTS users;
 
@@ -21,20 +21,20 @@ CREATE TABLE IF NOT EXISTS users
   birthday DATE    NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS rating
+CREATE TABLE IF NOT EXISTS mpa
 (
   id     INT PRIMARY KEY,
-  rating VARCHAR
+  name   VARCHAR
 );
 
 CREATE TABLE IF NOT EXISTS film
 (
-  id           BIGSERIAL PRIMARY KEY,
+  id           BIGSERIAL    PRIMARY KEY,
   name         VARCHAR      UNIQUE NOT NULL,
   description  VARCHAR(200) NULL,
   release_date DATE         NOT NULL,
   duration     INT          NOT NULL,
-  rating_id    BIGINT       NULL REFERENCES rating (id)
+  mpa_id       BIGINT       NULL REFERENCES mpa (id)
 );
 
 CREATE TABLE IF NOT EXISTS film_like

@@ -29,7 +29,6 @@ public class BaseRepository<T> {
     }
 
     protected List<T> findMany(String query, Object... params) {
-        System.out.println("findMany run");
         return jdbc.query(query, new BeanPropertyRowMapper<>(entityType), params);
     }
 
@@ -42,10 +41,6 @@ public class BaseRepository<T> {
 
     public void deleteTwoId(String query, long firstId, long secondId) {
         jdbc.update(query, firstId, secondId);
-//        int rowsDeleted = jdbc.update(query, firstId, secondId);
-//        if (rowsDeleted == 0) {
-//            throw new InternalServerException("Не удалось удалить данные");
-//        };
     }
 
     protected long insert(String query, Object... params) {
@@ -86,8 +81,6 @@ public class BaseRepository<T> {
     }
 
     protected Boolean getBoolean(String query, Object... params) {
-        System.out.println("getBoolean run");
-
         try {
             return jdbc.queryForObject(query, Boolean.class, params);
         }catch(EmptyResultDataAccessException e) {
