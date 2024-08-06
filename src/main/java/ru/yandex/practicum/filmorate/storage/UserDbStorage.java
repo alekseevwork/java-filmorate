@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dal.UserRepository;
+import ru.yandex.practicum.filmorate.dto.UserDto;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -23,11 +24,11 @@ public class UserDbStorage implements UserStorage, UserService {
     }
 
     @Override
-    public User create(User user) {
+    public UserDto create(User user) {
         if (user.getName() == null) {
             user.setName(user.getLogin());
         }
-        return repository.saveUser(user);
+        return repository.createUser(user);
     }
 
     @Override

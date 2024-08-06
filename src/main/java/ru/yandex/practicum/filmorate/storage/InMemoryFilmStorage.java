@@ -31,7 +31,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film create(Film film) {
         film.setId(++filmId);
-        film.setUsersId(new HashSet<>());
+        film.setLikes(new HashSet<>());
         films.put(film.getId(), film);
         return film;
     }
@@ -40,8 +40,8 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film update(Film newFilm) {
         if (films.containsKey(newFilm.getId())) {
             log.trace("film contains in filmsMap");
-            if (newFilm.getUsersId() == null) {
-                newFilm.setUsersId(new HashSet<>());
+            if (newFilm.getLikes() == null) {
+                newFilm.setLikes(new HashSet<>());
             }
             Film oldFilm = createFilm(newFilm);
             films.put(oldFilm.getId(), oldFilm);
@@ -52,13 +52,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     private Film createFilm(Film newFilm) {
-        return Film.builder()
-                .id(newFilm.getId())
-                .name(newFilm.getName())
-                .description(newFilm.getDescription())
-                .releaseDate(newFilm.getReleaseDate())
-                .duration(newFilm.getDuration())
-                .usersId(newFilm.getUsersId())
-                .build();
+        Film film = new Film();
+        film.setId(newFilm.getId());
+        film.setName(newFilm.getName());
+        film.setDescription(newFilm.getDescription());
+        film.setReleaseDate(newFilm.getReleaseDate());
+        film.setDuration(newFilm.getDuration());
+        return film;
     }
 }

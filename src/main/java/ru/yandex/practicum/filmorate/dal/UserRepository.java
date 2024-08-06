@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.dto.UserDto;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.ArrayList;
@@ -44,7 +46,7 @@ public class UserRepository extends BaseRepository<User>{
         return findOne(FIND_BY_ID_QUERY, userId);
     }
 
-    public User saveUser(User user) {
+    public UserDto createUser(User user) {
         Long id = insert(
                 INSERT_QUERY,
                 user.getEmail(),
@@ -53,12 +55,12 @@ public class UserRepository extends BaseRepository<User>{
                 user.getBirthday()
         );
         user.setId(id);
-        return user;
+        return UserMapper.mapToUserDto(user);
     }
 
     public User updateUser(User user) {
         if (findOne(FIND_BY_ID_QUERY, user.getId()).isEmpty()) {
-            log.debug("User create - User = {}, not found", user);
+            log.debug("User update - User = {}, not found", user);
             throw new NotFoundException("User not found");
         }
         update(

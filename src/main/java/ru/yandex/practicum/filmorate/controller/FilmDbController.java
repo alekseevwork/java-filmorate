@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.yandex.practicum.filmorate.dal.FilmRepository;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.InMemoryFilmService;
 
@@ -19,46 +20,46 @@ import java.util.Collection;
 import java.util.List;
 
 @Slf4j
-//@RestController
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/films")
-public class FilmController {
+public class FilmDbController {
 
-    private final InMemoryFilmService filmService;
+    private final FilmRepository repository;
 
     @GetMapping
     public Collection<Film> findAll() {
         log.info("GET /films: findAll");
-        return filmService.filmStorage.findAll();
+        return repository.findAll();
     }
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
         log.info("POST /films: create: {}", film);
-        return filmService.filmStorage.create(film);
+        return repository.create(film);
     }
 
     @PutMapping
     public Film update(@Valid @RequestBody Film newFilm) {
         log.info("PUT /films: update: {}", newFilm);
-        return filmService.filmStorage.update(newFilm);
+        return repository.update(newFilm);
     }
 
     @PutMapping("/{filmId}/like/{userId}")
     public void addLike(@Valid @PathVariable Long filmId, @Valid  @PathVariable Long userId) {
         log.info("PUT /films/filmId/like/userId: addLike: filmId - {}, userId - {}", filmId, userId);
-        filmService.addLike(filmId, userId);
+        repository.addLike(filmId, userId);
     }
 
     @DeleteMapping("/{filmId}/like/{userId}")
     public void deleteLike(@Valid @PathVariable Long filmId, @Valid @PathVariable Long userId) {
         log.info("DELETE /films/filmId/like/userId: deleteLike: filmId - {}, userId - {}", filmId, userId);
-        filmService.deleteLike(filmId, userId);
+        repository.addLike(filmId, userId);
     }
 
     @GetMapping("/popular")
     public List<Film> getPopularLikesFilms(@RequestParam(defaultValue = "10") Integer count) {
         log.info("GET /films: findAll");
-        return filmService.getPopularLikesFilms(count);
+        return repository.getPopularLikesFilms(count);
     }
 }

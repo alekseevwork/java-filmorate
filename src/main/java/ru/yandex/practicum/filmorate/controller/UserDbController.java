@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.yandex.practicum.filmorate.dto.UserDto;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 
@@ -45,7 +46,7 @@ public class UserDbController {
     }
 
     @PostMapping
-    public User create(@Valid @RequestBody User user) {
+    public UserDto create(@Valid @RequestBody User user) {
         log.info("POST /users: create: {}", user);
         return storage.create(user);
     }

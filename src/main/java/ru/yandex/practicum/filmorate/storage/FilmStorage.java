@@ -12,6 +12,4 @@ public interface FilmStorage {
     Collection<Film> findAll();
 
     Film update(Film film);
-
-    Map<Long, Film> getFilms();
 }
