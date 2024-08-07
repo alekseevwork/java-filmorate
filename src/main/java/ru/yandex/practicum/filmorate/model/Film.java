@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import ru.yandex.practicum.filmorate.annotation.MinimumDate;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -17,6 +18,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class Film {
     private Set<Long> likes;
+    @NotNull
     private Set<Genre> genres;
 
     Long id;
