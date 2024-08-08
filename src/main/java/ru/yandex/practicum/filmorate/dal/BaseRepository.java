@@ -28,13 +28,13 @@ public class BaseRepository<T> {
         }
     }
 
-    protected List<T> findMany(String query, Object... params) {
-        return jdbc.query(query, new BeanPropertyRowMapper<>(entityType), params);
-    }
-
 //    protected List<T> findMany(String query, Object... params) {
-//        return jdbc.query(query, mapper, params);
+//        return jdbc.query(query, new BeanPropertyRowMapper<>(entityType), params);
 //    }
+
+    protected List<T> findMany(String query, Object... params) {
+        return jdbc.query(query, mapper, params);
+    }
 
     public void delete(String query, long id) {
         int rowsDeleted = jdbc.update(query, id);

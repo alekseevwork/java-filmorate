@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.util.Collection;
@@ -24,7 +25,7 @@ public class MpaRepository extends BaseRepository<Mpa> {
     }
 
     public Mpa getById(Integer id) {
-        return findOne(SELECT_MPA, id).orElseThrow(() -> new NotFoundException("Mpa by ID = " + id + " not found"));
+        return findOne(SELECT_MPA, id).orElseThrow(() -> new ValidationException("Mpa by ID = " + id + " not found"));
     }
 }
 

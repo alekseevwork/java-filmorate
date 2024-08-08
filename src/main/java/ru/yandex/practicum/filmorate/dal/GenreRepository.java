@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.util.Collection;
@@ -25,7 +25,7 @@ public class GenreRepository extends BaseRepository<Genre> {
     }
 
     public Genre getById(Integer id) {
-        return findOne(SELECT_GENRE, id).orElseThrow(() -> new NotFoundException("Genre by ID = " + id + " not found"));
+        return findOne(SELECT_GENRE, id).orElseThrow(() -> new ValidationException("Genre by ID = " + id + " not found"));
     }
 
 }

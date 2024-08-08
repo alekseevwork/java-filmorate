@@ -23,9 +23,9 @@ public class UserRepository extends BaseRepository<User>{
     private static final String INSERT_USER = "INSERT INTO users (email, login, name, birthday)" +
             "VALUES (?, ?, ?, ?)";
     private static final String SELECT_ALL_USER = "SELECT * FROM users";
-    private static final String UPDATE_USER = "UPDATE users SET email = ?, login = ?, name = ?, birthday = ? WHERE id = ?";
-    private static final String SELECT_BY_ID_USER = "SELECT * FROM users WHERE id = ?";
-    private static final String DELETE_BY_ID_USER = "DELETE FROM users WHERE id = ?";
+    private static final String UPDATE_USER = "UPDATE users SET email = ?, login = ?, name = ?, birthday = ? WHERE user_id = ?";
+    private static final String SELECT_BY_ID_USER = "SELECT * FROM users WHERE user_id = ?";
+    private static final String DELETE_BY_ID_USER = "DELETE FROM users WHERE user_id = ?";
 
     private static final String INSERT_FRIEND = "INSERT INTO friend(user_id, friend_id, status)" +
             "VALUES (?, ?, ?)";
@@ -39,7 +39,10 @@ public class UserRepository extends BaseRepository<User>{
     }
 
     public List<User> findAllUser() {
-        return findMany(SELECT_ALL_USER);
+        List<User> users = findMany(SELECT_ALL_USER);
+        System.out.println(users);
+//        return findMany(SELECT_ALL_USER);
+        return users;
     }
 
     public Optional<User> findUserById(Long userId) {

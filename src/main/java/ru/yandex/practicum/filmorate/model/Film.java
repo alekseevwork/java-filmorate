@@ -10,17 +10,21 @@ import lombok.NoArgsConstructor;
 import ru.yandex.practicum.filmorate.annotation.MinimumDate;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 
 @Data
 @NoArgsConstructor
 public class Film {
-    private Set<Long> likes;
-    @NotNull
-    private Set<Genre> genres;
+    private Set<Long> likes = new HashSet<>();
+//    private List<Genre> genres = new ArrayList<>();
+    private Set<Genre> genres = new LinkedHashSet<>();
 
+//    Long film_id;
     Long id;
     @NotBlank
     private String name;
