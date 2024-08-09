@@ -30,8 +30,7 @@ CREATE TABLE IF NOT EXISTS mpa
 CREATE TABLE IF NOT EXISTS film
 (
   id           BIGSERIAL    PRIMARY KEY,
---  film_id           BIGSERIAL    PRIMARY KEY,
-  name         VARCHAR      UNIQUE NOT NULL,
+  name         VARCHAR      NOT NULL,
   description  VARCHAR(200) NULL,
   release_date DATE         NOT NULL,
   duration     INT          NOT NULL,

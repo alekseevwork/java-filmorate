@@ -16,11 +16,11 @@ import java.util.Set;
 public class FilmDto extends Film {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     Long id;
-//    Long film_id;
     private String name;
     private String description;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDate releaseDate;
     private Integer duration;
     private Mpa mpa;
+    private Set<Long> likes = new HashSet<>();
 }

@@ -14,15 +14,10 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 @Repository
@@ -30,23 +25,21 @@ public class FilmRepository extends BaseRepository<Film> implements FilmService,
     private static final String INSERT_FILM = "INSERT INTO film (name, description, release_date, duration, mpa_id)" +
             "VALUES (?, ?, ?, ?, ?)";
     private static final String UPDATE_FILM = "UPDATE film SET name = ?, description = ?, release_date = ?," +
-            " duration = ?, mpa = ? WHERE id = ? VALUES(?, ?, ?, ?, ?, ?)";
+            " duration = ?, mpa_id = ? WHERE id = ?";
     private static final String SELECT_BY_ID_FILM = "SELECT * FROM film WHERE id = ?";
     private static final String DELETE_BY_ID_FILM = "DELETE FROM film WHERE id = ?";
     private static final String SELECT_ALL_FILM = "SELECT * FROM film";
-    private static final String SELECT_POPULAR_FILM = "SELECT f.id, f.name, COUNT(fl.film_id) AS like_count\n" +
-            "FROM film f\n" +
-            "JOIN film_like fl ON f.id = fl.film_id\n" +
-            "GROUP BY f.id, f.name\n" +
-            "ORDER BY like_count DESC\n" +
-            "LIMIT ?;";
     private static final String UPDATE_MPA = "UPDATE film SET mpa = ? WHERE mpa_id = ? VALUES(?, ?)";
     private static final String INSERT_GENRE = "INSERT INTO film_genre (genre_id, film_id) VALUES(?, ?)";
+    private static final String ADD_LIKE = "INSERT INTO film_like (film_id, user_id) VALUES(?, ?)";
+    private static final String DELETE_LIKE = "DELETE FROM film_genre WHERE film_id = ? AND user_id = ?";
+    private static final String SELECT_LIKES_BY_ID_FILM = "SELECT user_id FROM film_like WHERE film_id = ?";
+
+
 
 
     @Autowired
     private GenreRepository genreRepository;
-
     @Autowired
     private MpaRepository mpaRepository;
 
@@ -81,30 +74,39 @@ public class FilmRepository extends BaseRepository<Film> implements FilmService,
 
     @Override
     public Collection<Film> findAll() {
+
+//        List<Film> films = findMany(SELECT_ALL_FILM);
+//        for (Film film : films) {
+//            film.setLikes(new HashSet<>(findManyInstances(FIND_LIKES_BY_FILM_ID, Long.class, film.getId())));
+//            film.setMpa(mpaRepository.getById(film.getMpa().getId()));
+//            film.setGenres(new HashSet<>(genreRepository.getById(film.getId())));
+//            System.out.println(film);
+//
+//        }
+
         return findMany(SELECT_ALL_FILM);
     }
 
     @Override
     public Film update(Film film) {
-        System.out.println(film);
         if (film.getId() == null) {
             throw new ValidationException("Film update - Film id is null");
         }
-        System.out.println(findOne(SELECT_BY_ID_FILM, film.getId()));
         if (findOne(SELECT_BY_ID_FILM, film.getId()).isEmpty()) {
             log.debug("Film update - Film = {}, not found", film);
             throw new NotFoundException("Film not found");
         }
-
+        System.out.println(findOne(SELECT_BY_ID_FILM, film.getId()));
         update(
                 UPDATE_FILM,
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration(),
-                film.getMpa(),
+                film.getMpa().getId(),
                 film.getId()
                 );
+        System.out.println(findOne(SELECT_BY_ID_FILM, film.getId()));
         return film;
     }
 
@@ -114,16 +116,23 @@ public class FilmRepository extends BaseRepository<Film> implements FilmService,
 
     @Override
     public void addLike(Long filmId, Long userId) {
+        insert(ADD_LIKE, filmId, userId);
 
     }
 
     @Override
     public void deleteLike(Long filmId, Long userId) {
-
+        deleteTwoId(DELETE_LIKE, filmId, userId);
     }
 
     @Override
     public List<Film> getPopularLikesFilms(Integer sizeList) {
-        return findMany(SELECT_POPULAR_FILM, sizeList);
+        List<Film> films = findAll().stream()
+                .sorted(Comparator.comparing(film -> film.getLikes().size(), Comparator.reverseOrder()))
+                .limit(sizeList)
+                .toList();
+        System.out.println(films);
+
+        return films;
     }
 }

@@ -59,7 +59,7 @@ public class FilmDbController {
 
     @GetMapping("/popular")
     public List<Film> getPopularLikesFilms(@RequestParam(defaultValue = "10") Integer count) {
-        log.info("GET /films: findAll");
+        log.info("GET /films: popular");
         return repository.getPopularLikesFilms(count);
     }
 }

@@ -2,9 +2,9 @@ package ru.yandex.practicum.filmorate.dal;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import ru.yandex.practicum.filmorate.exception.InternalServerException;
 
@@ -27,10 +27,6 @@ public class BaseRepository<T> {
             return Optional.empty();
         }
     }
-
-//    protected List<T> findMany(String query, Object... params) {
-//        return jdbc.query(query, new BeanPropertyRowMapper<>(entityType), params);
-//    }
 
     protected List<T> findMany(String query, Object... params) {
         return jdbc.query(query, mapper, params);
