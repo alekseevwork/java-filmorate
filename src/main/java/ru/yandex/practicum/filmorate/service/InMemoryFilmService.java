@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
@@ -28,11 +27,10 @@ public class InMemoryFilmService implements FilmService {
 
     @Override
     public void addLike(Long filmId, Long userId) {
-//        if (!filmStorage.getFilms().containsKey(filmId)) {
-//            log.debug("Film addLike - Film with id = {} not found", filmId);
-//            throw new NotFoundException("Film not found.");
-//        }
-//        Film film = filmStorage.getFilms().get(filmId);
+        if (!filmStorage.getFilms().containsKey(filmId)) {
+            log.debug("Film addLike - Film with id = {} not found", filmId);
+            throw new NotFoundException("Film not found.");
+        }
         Film film = filmStorage.findAll().stream().filter(film1 -> film1.getId().equals(filmId)).findFirst().get();
 
         if (film.getLikes().contains(userId)) {
@@ -48,10 +46,10 @@ public class InMemoryFilmService implements FilmService {
 
     @Override
     public void deleteLike(Long filmId, Long userId) {
-//        if (!filmStorage.getFilms().containsKey(filmId)) {
-//            log.debug("Film addLike - Film with id = {} not found", filmId);
-//            throw new NotFoundException("Film not found.");
-//        }
+        if (!filmStorage.getFilms().containsKey(filmId)) {
+            log.debug("Film addLike - Film with id = {} not found", filmId);
+            throw new NotFoundException("Film not found.");
+        }
         Film film = filmStorage.findAll().stream().filter(film1 -> film1.getId().equals(filmId)).findFirst().get();
 
         if (!userStorage.getUsers().containsKey(userId) || userId == null) {

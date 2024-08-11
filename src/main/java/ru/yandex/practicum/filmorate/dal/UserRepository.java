@@ -8,6 +8,8 @@ import ru.yandex.practicum.filmorate.dto.UserDto;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
-public class UserRepository extends BaseRepository<User>{
+public class UserRepository extends BaseRepository<User> implements UserStorage, UserService {
     private static final String INSERT_USER = "INSERT INTO users (email, login, name, birthday)" +
             "VALUES (?, ?, ?, ?)";
     private static final String SELECT_ALL_USER = "SELECT * FROM users";
@@ -38,18 +40,21 @@ public class UserRepository extends BaseRepository<User>{
         super(jdbc, mapper, User.class);
     }
 
-    public List<User> findAllUser() {
-        List<User> users = findMany(SELECT_ALL_USER);
-        System.out.println(users);
-//        return findMany(SELECT_ALL_USER);
-        return users;
+    @Override
+    public List<User> findAll() {
+        return findMany(SELECT_ALL_USER);
     }
 
     public Optional<User> findUserById(Long userId) {
         return findOne(SELECT_BY_ID_USER, userId);
     }
 
-    public UserDto createUser(User user) {
+    @Override
+    public UserDto create(User user) {
+        if (user.getName() == null) {
+            user.setName(user.getLogin());
+        }
+
         Long id = insert(
                 INSERT_USER,
                 user.getEmail(),
@@ -61,7 +66,8 @@ public class UserRepository extends BaseRepository<User>{
         return UserMapper.mapToUserDto(user);
     }
 
-    public User updateUser(User user) {
+    @Override
+    public UserDto update(User user) {
         if (findOne(SELECT_BY_ID_USER, user.getId()).isEmpty()) {
             log.debug("User update - User = {}, not found", user);
             throw new NotFoundException("User not found");
@@ -74,7 +80,7 @@ public class UserRepository extends BaseRepository<User>{
                 user.getBirthday(),
                 user.getId()
         );
-        return user;
+        return UserMapper.mapToUserDto(user);
     }
 
     public void deleteUser(Long userId) {
@@ -121,7 +127,7 @@ public class UserRepository extends BaseRepository<User>{
         }
 
         for (Long id: friends) {
-            users.add(findOne(SELECT_BY_ID_USER, id).get());
+            users.add(findOne(SELECT_BY_ID_USER, id).orElseThrow());
         }
         return users;
     }
@@ -138,7 +144,7 @@ public class UserRepository extends BaseRepository<User>{
         return friends;
     }
 
-    public Set<User> getFriendsSharedUsers(Long userId, Long otherId) {
+    public List<User> getFriendsSharedUsers(Long userId, Long otherId) {
         Set<User> sharedFriends = new HashSet<>();
 
         sharedFriends.addAll(getAllFriends(userId));
@@ -147,7 +153,8 @@ public class UserRepository extends BaseRepository<User>{
         return sharedFriends.stream()
                 .filter(user -> !Objects.equals(otherId, user.getId()))
                 .filter(user -> !Objects.equals(userId, user.getId()))
-                .collect(Collectors.toSet());
+                .map(UserMapper::mapToUserDto)
+                .collect(Collectors.toList());
     }
 
     public void isExist(Long userId, Long friendId) {

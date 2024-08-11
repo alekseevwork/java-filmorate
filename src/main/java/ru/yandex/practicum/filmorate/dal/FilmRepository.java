@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
@@ -29,14 +30,12 @@ public class FilmRepository extends BaseRepository<Film> implements FilmService,
     private static final String SELECT_BY_ID_FILM = "SELECT * FROM film WHERE id = ?";
     private static final String DELETE_BY_ID_FILM = "DELETE FROM film WHERE id = ?";
     private static final String SELECT_ALL_FILM = "SELECT * FROM film";
-    private static final String UPDATE_MPA = "UPDATE film SET mpa = ? WHERE mpa_id = ? VALUES(?, ?)";
-    private static final String INSERT_GENRE = "INSERT INTO film_genre (genre_id, film_id) VALUES(?, ?)";
+
+    private static final String INSERT_FILM_GENRE = "INSERT INTO film_genre (genre_id, film_id) VALUES(?, ?)";
+
     private static final String ADD_LIKE = "INSERT INTO film_like (film_id, user_id) VALUES(?, ?)";
     private static final String DELETE_LIKE = "DELETE FROM film_genre WHERE film_id = ? AND user_id = ?";
     private static final String SELECT_LIKES_BY_ID_FILM = "SELECT user_id FROM film_like WHERE film_id = ?";
-
-
-
 
     @Autowired
     private GenreRepository genreRepository;
@@ -49,6 +48,8 @@ public class FilmRepository extends BaseRepository<Film> implements FilmService,
 
     @Override
     public FilmDto create(Film film) {
+        validationById(film);
+
         FilmDto filmDto = FilmMapper.mapToFilmDto(film);
         filmDto.setMpa(mpaRepository.getById(film.getMpa().getId()));
 
@@ -65,7 +66,7 @@ public class FilmRepository extends BaseRepository<Film> implements FilmService,
         if (film.getGenres() != null) {
             for (Genre genre: film.getGenres()) {
                 filmDto.getGenres().add(genreRepository.getById(genre.getId()));
-                insertNotId(INSERT_GENRE, genre.getId(), filmId);
+                insertNotId(INSERT_FILM_GENRE, genre.getId(), filmId);
             }
         }
 
@@ -75,28 +76,34 @@ public class FilmRepository extends BaseRepository<Film> implements FilmService,
     @Override
     public Collection<Film> findAll() {
 
-//        List<Film> films = findMany(SELECT_ALL_FILM);
-//        for (Film film : films) {
-//            film.setLikes(new HashSet<>(findManyInstances(FIND_LIKES_BY_FILM_ID, Long.class, film.getId())));
-//            film.setMpa(mpaRepository.getById(film.getMpa().getId()));
-//            film.setGenres(new HashSet<>(genreRepository.getById(film.getId())));
-//            System.out.println(film);
-//
-//        }
+        List<Film> films = findMany(SELECT_ALL_FILM);
+        for (Film film : films) {
+            film.setLikes(new HashSet<>(findManyInstances(SELECT_LIKES_BY_ID_FILM, Long.class, film.getId())));
+            film.setMpa(mpaRepository.getById(film.getMpa().getId()));
+            film.setGenres(new HashSet<>(genreRepository.findGenresByFilmId(film.getId())));
+        }
+        return films.stream().map(FilmMapper::mapToFilmDto).collect(Collectors.toList());
+    }
 
-        return findMany(SELECT_ALL_FILM);
+    public Film getFilmById(Long id) {
+        Film film = findOne(SELECT_BY_ID_FILM, id)
+                .orElseThrow(() -> new NotFoundException("Фильм с ID = " + id + " не найден"));
+        film.setLikes(new HashSet<>(findManyInstances(SELECT_LIKES_BY_ID_FILM, Long.class, film.getId())));
+        film.setMpa(mpaRepository.getById(film.getMpa().getId()));
+        film.setGenres(new HashSet<>(genreRepository.findGenresByFilmId(film.getId())));
+        return film;
     }
 
     @Override
     public Film update(Film film) {
         if (film.getId() == null) {
+            log.debug("Film update - Film = {}, id is null", film);
             throw new ValidationException("Film update - Film id is null");
         }
         if (findOne(SELECT_BY_ID_FILM, film.getId()).isEmpty()) {
             log.debug("Film update - Film = {}, not found", film);
             throw new NotFoundException("Film not found");
         }
-        System.out.println(findOne(SELECT_BY_ID_FILM, film.getId()));
         update(
                 UPDATE_FILM,
                 film.getName(),
@@ -106,8 +113,7 @@ public class FilmRepository extends BaseRepository<Film> implements FilmService,
                 film.getMpa().getId(),
                 film.getId()
                 );
-        System.out.println(findOne(SELECT_BY_ID_FILM, film.getId()));
-        return film;
+        return FilmMapper.mapToFilmDto(film);
     }
 
     public void deleteById(Long id) {
@@ -116,8 +122,7 @@ public class FilmRepository extends BaseRepository<Film> implements FilmService,
 
     @Override
     public void addLike(Long filmId, Long userId) {
-        insert(ADD_LIKE, filmId, userId);
-
+        insertNotId(ADD_LIKE, filmId, userId);
     }
 
     @Override
@@ -127,12 +132,21 @@ public class FilmRepository extends BaseRepository<Film> implements FilmService,
 
     @Override
     public List<Film> getPopularLikesFilms(Integer sizeList) {
-        List<Film> films = findAll().stream()
+        return findAll().stream()
                 .sorted(Comparator.comparing(film -> film.getLikes().size(), Comparator.reverseOrder()))
                 .limit(sizeList)
                 .toList();
-        System.out.println(films);
+    }
 
-        return films;
+    public void validationById(Film film) {
+        try {
+            mpaRepository.getById(film.getMpa().getId());
+            for (Genre g : film.getGenres()) {
+                genreRepository.getById(g.getId());
+            }
+        } catch (Exception e) {
+            log.debug("Film = {}, fail validation", film);
+            throw new ValidationException(e.getMessage());
+        }
     }
 }

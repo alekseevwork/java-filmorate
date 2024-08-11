@@ -33,6 +33,12 @@ public class FilmDbController {
         return repository.findAll();
     }
 
+    @GetMapping("/{filmId}")
+    public Film getFilmById(@Valid @PathVariable Long filmId) {
+        log.info("PUT /films/filmId: getFilmById: filmId - {}", filmId);
+        return repository.getFilmById(filmId);
+    }
+
     @PostMapping
     public FilmDto create(@Valid @RequestBody Film film) {
         log.info("POST /films: create: {}", film);

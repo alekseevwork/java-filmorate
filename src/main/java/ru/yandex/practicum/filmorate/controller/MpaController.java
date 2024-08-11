@@ -2,13 +2,15 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.dal.MpaRepository;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.dto.MpaDto;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
-import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -18,12 +20,14 @@ public class MpaController {
 
     private final MpaRepository mpaRepository;
 
-    public Collection<Mpa> getAll() {
+    @GetMapping
+    public List<MpaDto> getAll() {
         log.info("GET /mpa: findAll");
         return mpaRepository.getAll();
     }
 
-    public Mpa getById(Integer id) {
+    @GetMapping("/{id}")
+    public Mpa getById(@PathVariable Long id) {
         log.info("GET /mpa: getById");
         return mpaRepository.getById(id);
     }

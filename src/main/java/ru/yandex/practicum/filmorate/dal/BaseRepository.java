@@ -32,6 +32,10 @@ public class BaseRepository<T> {
         return jdbc.query(query, mapper, params);
     }
 
+    protected <T> List<T> findManyInstances(String query, Class<T> type, Object... params) {
+        return jdbc.query(query, new SingleColumnRowMapper<>(type), params);
+    }
+
     public void delete(String query, long id) {
         int rowsDeleted = jdbc.update(query, id);
         if (rowsDeleted == 0) {

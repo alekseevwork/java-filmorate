@@ -2,28 +2,30 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.dal.GenreRepository;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.dto.GenreDto;
 
-import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/genre")
+@RequestMapping("/genres")
 public class GenreController {
     private final GenreRepository genreRepository;
 
-
-    public Collection<Genre> getAll() {
+    @GetMapping
+    public List<GenreDto> getAll() {
         log.info("GET /genre: getAll");
         return genreRepository.getAll();
     }
 
-    public Genre getById(Integer id) {
+    @GetMapping("/{id}")
+    public GenreDto getById(@PathVariable Long id) {
         log.info("GET /genre: getById");
         return genreRepository.getById(id);
     }

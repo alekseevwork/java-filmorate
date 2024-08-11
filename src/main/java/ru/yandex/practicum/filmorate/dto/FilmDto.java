@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.time.LocalDate;
@@ -15,7 +14,7 @@ import java.util.Set;
 @Data
 public class FilmDto extends Film {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    Long id;
+    private Long id;
     private String name;
     private String description;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
