@@ -4,9 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.dto.GenreDto;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.mapper.GenreMapper;
 import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.util.List;
@@ -25,13 +23,12 @@ public class GenreRepository extends BaseRepository<Genre> {
         super(jdbc, mapper, Genre.class);
     }
 
-    public List<GenreDto> getAll() {
-        return findMany(SELECT_ALL_GENRE).stream().map(GenreMapper::mapToGenreDto).toList();
+    public List<Genre> getAll() {
+        return findMany(SELECT_ALL_GENRE);
     }
 
-    public GenreDto getById(Long id) {
-        return GenreMapper.mapToGenreDto(findOne(SELECT_GENRE, id)
-                .orElseThrow(() -> new NotFoundException("Genre by ID = " + id + " not found")));
+    public Genre getById(Long id) {
+        return findOne(SELECT_GENRE, id).orElseThrow(() -> new NotFoundException("Genre by ID = " + id + " not found"));
     }
 
     public List<Genre> findGenresByFilmId(Long filmId) {

@@ -40,7 +40,8 @@ public class BaseRepository<T> {
         int rowsDeleted = jdbc.update(query, id);
         if (rowsDeleted == 0) {
             throw new InternalServerException("Не удалось удалить данные");
-        };
+        }
+        ;
     }
 
     public void deleteTwoId(String query, long firstId, long secondId) {
@@ -87,7 +88,7 @@ public class BaseRepository<T> {
     protected Boolean getBoolean(String query, Object... params) {
         try {
             return jdbc.queryForObject(query, Boolean.class, params);
-        }catch(EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException e) {
             return false;
         }
     }

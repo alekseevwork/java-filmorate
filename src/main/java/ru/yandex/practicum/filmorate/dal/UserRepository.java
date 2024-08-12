@@ -126,7 +126,7 @@ public class UserRepository extends BaseRepository<User> implements UserStorage,
             return users;
         }
 
-        for (Long id: friends) {
+        for (Long id : friends) {
             users.add(findOne(SELECT_BY_ID_USER, id).orElseThrow());
         }
         return users;
