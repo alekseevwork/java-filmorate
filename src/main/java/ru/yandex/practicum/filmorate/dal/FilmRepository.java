@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.dto.FilmDto;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
-import ru.yandex.practicum.filmorate.mapper.GenreMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -66,7 +65,7 @@ public class FilmRepository extends BaseRepository<Film> implements FilmService,
 
         if (film.getGenres() != null) {
             for (Genre genre : film.getGenres()) {
-                filmDto.getGenres().add(GenreMapper.mapToGenreDto(genreRepository.getById(genre.getId())));
+                filmDto.getGenres().add(genreRepository.getById(genre.getId()));
                 insertNotId(INSERT_FILM_GENRE, genre.getId(), filmId);
             }
         }
