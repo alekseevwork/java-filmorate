@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public void DeleteById(@PathVariable Long userId) {
+    public void deleteById(@PathVariable Long userId) {
         log.info("GET /users: findAll");
         repository.deleteUser(userId);
     }
