@@ -41,7 +41,7 @@ public class FilmRepository extends BaseRepository<Film> implements FilmService,
         filmDto.setMpa(mpaRepository.getById(film.getMpa().getId()));
 
         Long filmId = insert(
-                sqlRequests.INSERT_FILM,
+                SqlRequests.INSERT_FILM,
                 filmDto.getName(),
                 filmDto.getDescription(),
                 filmDto.getReleaseDate(),
@@ -53,7 +53,7 @@ public class FilmRepository extends BaseRepository<Film> implements FilmService,
         if (film.getGenres() != null) {
             for (Genre genre : film.getGenres()) {
                 filmDto.getGenres().add(genreRepository.getById(genre.getId()));
-                insertNotId(sqlRequests.INSERT_FILM_GENRE, genre.getId(), filmId);
+                insertNotId(SqlRequests.INSERT_FILM_GENRE, genre.getId(), filmId);
             }
         }
 
@@ -63,9 +63,9 @@ public class FilmRepository extends BaseRepository<Film> implements FilmService,
     @Override
     public Collection<Film> findAll() {
 
-        List<Film> films = findMany(sqlRequests.SELECT_ALL_FILM);
+        List<Film> films = findMany(SqlRequests.SELECT_ALL_FILM);
         for (Film film : films) {
-            film.setLikes(new HashSet<>(findManyInstances(sqlRequests.SELECT_LIKES_BY_ID_FILM, Long.class, film.getId())));
+            film.setLikes(new HashSet<>(findManyInstances(SqlRequests.SELECT_LIKES_BY_ID_FILM, Long.class, film.getId())));
             film.setMpa(mpaRepository.getById(film.getMpa().getId()));
             film.setGenres(new HashSet<>(genreRepository.findGenresByFilmId(film.getId())));
         }
@@ -73,9 +73,9 @@ public class FilmRepository extends BaseRepository<Film> implements FilmService,
     }
 
     public Film getFilmById(Long id) {
-        Film film = findOne(sqlRequests.SELECT_BY_ID_FILM, id)
+        Film film = findOne(SqlRequests.SELECT_BY_ID_FILM, id)
                 .orElseThrow(() -> new NotFoundException("Фильм с ID = " + id + " не найден"));
-        film.setLikes(new HashSet<>(findManyInstances(sqlRequests.SELECT_LIKES_BY_ID_FILM, Long.class, film.getId())));
+        film.setLikes(new HashSet<>(findManyInstances(SqlRequests.SELECT_LIKES_BY_ID_FILM, Long.class, film.getId())));
         film.setMpa(mpaRepository.getById(film.getMpa().getId()));
         film.setGenres(new HashSet<>(genreRepository.findGenresByFilmId(film.getId())));
         return film;
@@ -87,12 +87,12 @@ public class FilmRepository extends BaseRepository<Film> implements FilmService,
             log.debug("Film update - Film = {}, id is null", film);
             throw new ValidationException("Film update - Film id is null");
         }
-        if (findOne(sqlRequests.SELECT_BY_ID_FILM, film.getId()).isEmpty()) {
+        if (findOne(SqlRequests.SELECT_BY_ID_FILM, film.getId()).isEmpty()) {
             log.debug("Film update - Film = {}, not found", film);
             throw new NotFoundException("Film not found");
         }
         update(
-                sqlRequests.UPDATE_FILM,
+                SqlRequests.UPDATE_FILM,
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
@@ -104,17 +104,17 @@ public class FilmRepository extends BaseRepository<Film> implements FilmService,
     }
 
     public void deleteById(Long id) {
-        delete(sqlRequests.DELETE_BY_ID_FILM, id);
+        delete(SqlRequests.DELETE_BY_ID_FILM, id);
     }
 
     @Override
     public void addLike(Long filmId, Long userId) {
-        insertNotId(sqlRequests.ADD_LIKE, filmId, userId);
+        insertNotId(SqlRequests.ADD_LIKE, filmId, userId);
     }
 
     @Override
     public void deleteLike(Long filmId, Long userId) {
-        deleteTwoId(sqlRequests.DELETE_LIKE, filmId, userId);
+        deleteTwoId(SqlRequests.DELETE_LIKE, filmId, userId);
     }
 
     @Override

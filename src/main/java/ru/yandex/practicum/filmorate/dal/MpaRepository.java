@@ -19,11 +19,11 @@ public class MpaRepository extends BaseRepository<Mpa> {
     }
 
     public List<MpaDto> getAll() {
-        return findMany(sqlRequests.SELECT_All_MPA).stream().map(MpaMapper::mapToMpaDto).toList();
+        return findMany(SqlRequests.SELECT_All_MPA).stream().map(MpaMapper::mapToMpaDto).toList();
     }
 
     public Mpa getById(Long id) {
-        return findOne(sqlRequests.SELECT_MPA, id).orElseThrow(() -> new NotFoundException("Mpa by ID = " + id + " not found"));
+        return findOne(SqlRequests.SELECT_MPA, id).orElseThrow(() -> new NotFoundException("Mpa by ID = " + id + " not found"));
     }
 }
 

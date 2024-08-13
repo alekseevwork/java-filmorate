@@ -17,15 +17,15 @@ public class GenreRepository extends BaseRepository<Genre> {
     }
 
     public List<Genre> getAll() {
-        return findMany(sqlRequests.SELECT_ALL_GENRE);
+        return findMany(SqlRequests.SELECT_ALL_GENRE);
     }
 
     public Genre getById(Long id) {
-        return findOne(sqlRequests.SELECT_GENRE, id)
+        return findOne(SqlRequests.SELECT_GENRE, id)
                 .orElseThrow(() -> new NotFoundException("Genre by ID = " + id + " not found"));
     }
 
     public List<Genre> findGenresByFilmId(Long filmId) {
-        return findMany(sqlRequests.SELECT_GENRES_BY_FILM_ID, filmId);
+        return findMany(SqlRequests.SELECT_GENRES_BY_FILM_ID, filmId);
     }
 }

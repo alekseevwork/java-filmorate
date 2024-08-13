@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.dal;
 
-public abstract class sqlRequests {
+public abstract class SqlRequests {
     public static final String INSERT_FILM = "INSERT INTO film (name, description, release_date, duration, mpa_id)" +
             "VALUES (?, ?, ?, ?, ?)";
     public static final String UPDATE_FILM = "UPDATE film SET name = ?, description = ?, release_date = ?," +

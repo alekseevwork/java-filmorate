@@ -28,11 +28,11 @@ public class UserRepository extends BaseRepository<User> implements UserStorage,
 
     @Override
     public List<User> findAll() {
-        return findMany(sqlRequests.SELECT_ALL_USER);
+        return findMany(SqlRequests.SELECT_ALL_USER);
     }
 
     public Optional<User> findUserById(Long userId) {
-        return findOne(sqlRequests.SELECT_BY_ID_USER, userId);
+        return findOne(SqlRequests.SELECT_BY_ID_USER, userId);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class UserRepository extends BaseRepository<User> implements UserStorage,
         }
 
         Long id = insert(
-                sqlRequests.INSERT_USER,
+                SqlRequests.INSERT_USER,
                 user.getEmail(),
                 user.getLogin(),
                 user.getName(),
@@ -54,12 +54,12 @@ public class UserRepository extends BaseRepository<User> implements UserStorage,
 
     @Override
     public UserDto update(User user) {
-        if (findOne(sqlRequests.SELECT_BY_ID_USER, user.getId()).isEmpty()) {
+        if (findOne(SqlRequests.SELECT_BY_ID_USER, user.getId()).isEmpty()) {
             log.debug("User update - User = {}, not found", user);
             throw new NotFoundException("User not found");
         }
         update(
-                sqlRequests.UPDATE_USER,
+                SqlRequests.UPDATE_USER,
                 user.getEmail(),
                 user.getLogin(),
                 user.getName(),
@@ -70,19 +70,19 @@ public class UserRepository extends BaseRepository<User> implements UserStorage,
     }
 
     public void deleteUser(Long userId) {
-        delete(sqlRequests.DELETE_BY_ID_USER, userId);
+        delete(SqlRequests.DELETE_BY_ID_USER, userId);
     }
 
     public void addFriend(Long userId, Long friendId) {
         isExist(userId, friendId);
 
-        boolean status = getBoolean(sqlRequests.SELECT_STATUS_FRIENDS, friendId, userId);
+        boolean status = getBoolean(SqlRequests.SELECT_STATUS_FRIENDS, friendId, userId);
 
         if (status) {
-            insertNotId(sqlRequests.INSERT_FRIEND, userId, friendId, true);
+            insertNotId(SqlRequests.INSERT_FRIEND, userId, friendId, true);
             updateFriendStatus(true, friendId, userId);
         } else {
-            insertNotId(sqlRequests.INSERT_FRIEND, userId, friendId, false);
+            insertNotId(SqlRequests.INSERT_FRIEND, userId, friendId, false);
         }
     }
 
@@ -90,12 +90,12 @@ public class UserRepository extends BaseRepository<User> implements UserStorage,
         isExist(userId, friendId);
 
         if (getAllFriendsId(userId).contains(friendId)) {
-            deleteTwoId(sqlRequests.DELETE_FRIEND, userId, friendId);
+            deleteTwoId(SqlRequests.DELETE_FRIEND, userId, friendId);
         }
     }
 
     public void updateFriendStatus(boolean status, Long userId, Long friendId) {
-        update(sqlRequests.UPDATE_FRIEND, status, userId, friendId);
+        update(SqlRequests.UPDATE_FRIEND, status, userId, friendId);
         log.info("User with Id: {} update status friend: {}", userId, friendId);
 
     }
@@ -113,14 +113,14 @@ public class UserRepository extends BaseRepository<User> implements UserStorage,
         }
 
         for (Long id : friends) {
-            users.add(findOne(sqlRequests.SELECT_BY_ID_USER, id).orElseThrow());
+            users.add(findOne(SqlRequests.SELECT_BY_ID_USER, id).orElseThrow());
         }
         return users;
     }
 
     public List<Long> getAllFriendsId(Long id) {
         List<Long> friends = new ArrayList<>();
-        jdbc.query(sqlRequests.SELECT_ALL_FRIEND, rs -> {
+        jdbc.query(SqlRequests.SELECT_ALL_FRIEND, rs -> {
             while (rs.next()) {
                 friends.add(rs.getLong("friend_id"));
             }
