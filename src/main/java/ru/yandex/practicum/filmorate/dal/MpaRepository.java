@@ -14,19 +14,16 @@ import java.util.List;
 @Slf4j
 @Repository
 public class MpaRepository extends BaseRepository<Mpa> {
-    private static final String SELECT_All_MPA = "SELECT * FROM mpa";
-    private static final String SELECT_MPA = "SELECT * FROM mpa WHERE mpa_id = ?";
-
     public MpaRepository(JdbcTemplate jdbc, RowMapper<Mpa> mapper) {
         super(jdbc, mapper, Mpa.class);
     }
 
     public List<MpaDto> getAll() {
-        return findMany(SELECT_All_MPA).stream().map(MpaMapper::mapToMpaDto).toList();
+        return findMany(sqlRequests.SELECT_All_MPA).stream().map(MpaMapper::mapToMpaDto).toList();
     }
 
     public Mpa getById(Long id) {
-        return findOne(SELECT_MPA, id).orElseThrow(() -> new NotFoundException("Mpa by ID = " + id + " not found"));
+        return findOne(sqlRequests.SELECT_MPA, id).orElseThrow(() -> new NotFoundException("Mpa by ID = " + id + " not found"));
     }
 }
 
