@@ -22,11 +22,12 @@ public class TestFilmStorage {
 
     @Test
     void testFindAllFilm() {
-        Film film = Film.builder()
-                .name("name")
-                .description("description")
-                .releaseDate(LocalDate.of(1997, 3, 25))
-                .duration(100).build();
+        Film film = new Film();
+        film.setName("name");
+        film.setDescription("description");
+        film.setReleaseDate(LocalDate.of(1997, 3, 25));
+        film.setDuration(100);
+
         assertTrue(filmStorage.findAll().isEmpty(), "Список не пустой");
         filmStorage.create(film);
         assertFalse(filmStorage.findAll().isEmpty(), "Список пустой");
@@ -34,11 +35,12 @@ public class TestFilmStorage {
 
     @Test
     void testCreateFilm() {
-        Film film = Film.builder()
-                .name("name")
-                .description("description")
-                .releaseDate(LocalDate.of(1997, 3, 25))
-                .duration(100).build();
+        Film film = new Film();
+        film.setName("name");
+        film.setDescription("description");
+        film.setReleaseDate(LocalDate.of(1997, 3, 25));
+        film.setDuration(100);
+
         Film saveFilm = filmStorage.create(film);
         film.setId(1L);
         assertEquals(saveFilm, film, "Задачи не совпали.");
@@ -46,18 +48,19 @@ public class TestFilmStorage {
 
     @Test
     void testUpdateFilm() {
-        Film filmOld = Film.builder()
-                .name("name")
-                .description("description")
-                .releaseDate(LocalDate.of(1997, 3, 25))
-                .duration(100).build();
+        Film filmOld = new Film();
+        filmOld.setName("name");
+        filmOld.setDescription("description");
+        filmOld.setReleaseDate(LocalDate.of(1997, 3, 25));
+        filmOld.setDuration(100);
 
-        Film filmNew = Film.builder()
-                .id(1L)
-                .name("name2")
-                .description("description2")
-                .releaseDate(LocalDate.of(1997, 3, 25))
-                .duration(100).build();
+        Film filmNew = new Film();
+        filmNew.setId(1L);
+        filmNew.setName("name2");
+        filmNew.setDescription("description2");
+        filmNew.setReleaseDate(LocalDate.of(1997, 3, 25));
+        filmNew.setDuration(100);
+
         filmStorage.create(filmOld);
         Collection<Film> findFilm = filmStorage.findAll();
 
@@ -72,17 +75,18 @@ public class TestFilmStorage {
 
     @Test
     void testExceptionUpdateFilm() {
-        Film filmOld = Film.builder()
-                .name("name")
-                .description("description")
-                .releaseDate(LocalDate.of(1997, 3, 25))
-                .duration(100).build();
-        filmStorage.create(filmOld);
-        Film filmNew = Film.builder()
-                .name("name2")
-                .description("description2")
-                .releaseDate(LocalDate.of(1997, 3, 25))
-                .duration(100).build();
+        Film filmOld = new Film();
+        filmOld.setName("name");
+        filmOld.setDescription("description");
+        filmOld.setReleaseDate(LocalDate.of(1997, 3, 25));
+        filmOld.setDuration(100);
+
+        Film filmNew = new Film();
+        filmNew.setId(1L);
+        filmNew.setName("name2");
+        filmNew.setDescription("description2");
+        filmNew.setReleaseDate(LocalDate.of(1997, 3, 25));
+        filmNew.setDuration(100);
 
         assertThrows(NotFoundException.class, () -> {
             filmStorage.update(filmNew);

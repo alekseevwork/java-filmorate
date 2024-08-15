@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.DuplicateFormatFlagsException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -28,6 +29,14 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public Collection<User> findAll() {
         return users.values();
+    }
+
+    @Override
+    public Optional<User> findUserById(Long userId) {
+        if (users.containsKey(userId)) {
+            return Optional.of(users.get(userId));
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -73,12 +82,12 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     private User createUser(User newUser) {
-        return User.builder()
-                .id(newUser.getId())
-                .email(newUser.getEmail())
-                .login(newUser.getLogin())
-                .name(newUser.getName())
-                .birthday(newUser.getBirthday())
-                .build();
+        User user = new User();
+        user.setId(newUser.getId());
+        user.setEmail(newUser.getEmail());
+        user.setLogin(newUser.getLogin());
+        user.setName(newUser.getName());
+        user.setBirthday(newUser.getBirthday());
+        return user;
     }
 }
